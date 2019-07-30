@@ -118,6 +118,24 @@ func deleteServer(device string) {
 	query.Exec()
 }
 
+func updateDevice(device, comp, value string) {
+	db, err := sql.Open("sqlite3", "remotego.db")
+
+	if err != nil {
+		panic(err)
+	}
+
+	db_query := "UPDATE devices SET " + comp + "='" + value + "' WHERE device='" + device + "'"
+	fmt.Println(db_query)
+	query, err := db.Prepare(db_query)
+
+	if err != nil {
+		panic(err)
+	}
+
+	query.Exec()
+}
+
 func usage(name string) {
 	fmt.Printf("usage : %s [args]\n", name)
 	fmt.Println(" -a, --add <device|user|ip|port>\tadd device to list")
@@ -145,7 +163,11 @@ func main() {
 			}
 			updateDB(srvInfo)
 		} else if argv[i] == "-u" || argv[i] == "--update" {
-			fmt.Println("update")
+			if argc != 5 {
+				usage(argv[0])
+			} else {
+				updateDevice(argv[2], argv[3], argv[4])
+			}
 		} else if argv[i] == "-c" || argv[i] == "--connect" {
 			_, user, ip, port := readDB(argv[2])
 			spawnSSH(user, ip, port)
