@@ -39,7 +39,6 @@ func createDB() {
 func updateDB(srvInfo []string) {
 
 	if _, err := os.Stat("remotego.db"); os.IsNotExist(err) {
-		fmt.Println("DB does not exist, creating now")
 		createDB()
 	}
 
